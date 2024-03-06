@@ -1,0 +1,34 @@
+<div class="wrapper">
+	<div class="image-wrapper">
+		<img src="assets/images/login.svg">
+		<p>Hoş geldiniz! Lütfen giriş yapmak için kullanıcı adı ve parolanızı girin.</p>
+	</div>
+	<div class="login-form-wrapper">
+		<div class="logo">
+
+		</div>
+		<form class="login-form" [formGroup]="loginForm" (ngSubmit)="login()">
+			<p-inputGroup>
+				<p-inputGroupAddon>
+					<i class="pi pi-envelope"></i>
+				</p-inputGroupAddon>
+				<input pInputText type="email" placeholder="E-posta" formControlName="email" />
+			</p-inputGroup>
+			@if(submitted && f['email'].errors){
+				<small id="email-errors-text" style="color: red;">Hatalı email adresi.</small>
+			}	
+
+			<p-inputGroup>
+				<p-inputGroupAddon>
+					<i class="pi pi-lock"></i>
+				</p-inputGroupAddon>
+				<input pInputText type="password" placeholder="Şifre" formControlName="password" />
+			</p-inputGroup>
+			@if(submitted && f['password'].errors){
+				<small id="password-errors-text" style="color: red;">Şifre boş olamaz.</small>
+			}	
+
+			<p-button type="submit" label="Giriş Yap" icon="pi pi-arrow-right" size="small"></p-button>
+		</form>
+	</div>
+</div>
