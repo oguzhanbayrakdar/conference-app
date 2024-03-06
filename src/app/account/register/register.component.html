@@ -1,0 +1,83 @@
+<div class="wrapper">
+	<div class="register-form-wrapper">
+		<div class="logo"></div>
+			<form class="register-form" [formGroup]="registerForm" (ngSubmit)="register()">
+				<p-inputGroup>
+					<p-inputGroupAddon>
+						<i class="pi pi-user"></i>
+					</p-inputGroupAddon>
+					<input pInputText type="text" placeholder="Ad" formControlName="firstname" />
+				</p-inputGroup>
+				@if(submitted && f['firstname'].errors){
+					<small id="firstname-errors-text" style="color: red;">Ad boş olamaz.</small>
+				}	
+	
+				<p-inputGroup>
+					<p-inputGroupAddon>
+						<i class="pi pi-user"></i>
+					</p-inputGroupAddon>
+					<input pInputText type="text" placeholder="Soyad" formControlName="lastname" />
+				</p-inputGroup>
+				@if(submitted && f['lastname'].errors){
+					<small id="lastname-errors-text" style="color: red;">Soyad boş olamaz.</small>
+				}	
+	
+				<p-inputGroup>
+					<p-inputGroupAddon>
+						<i class="pi pi-envelope"></i>
+					</p-inputGroupAddon>
+					<input pInputText type="email" placeholder="E-posta" formControlName="email" />
+				</p-inputGroup>
+				@if(submitted && f['email'].errors){
+					<small id="email-errors-text" style="color: red;">Hatalı email adresi.</small>
+				}	
+	
+				<p-inputGroup>
+					<p-inputGroupAddon>
+						<i class="pi pi-phone"></i>
+					</p-inputGroupAddon>
+					<input pInputText type="phone" placeholder="Telefon Numarası" formControlName="phone" />
+				</p-inputGroup>
+				@if(submitted && f['phone'].errors){
+					<small id="phone-errors-text" style="color: red;">Hatalı telefon numarası.</small>
+				}
+
+				<p-inputGroup>
+					<p-inputGroupAddon>
+						<i class="pi pi-image"></i>
+					</p-inputGroupAddon>
+					<p-fileUpload mode="basic" [maxFileSize]="1000000" (onUpload)="onProfilePhotoUpload($event)" chooseLabel="Choose" name="demo[]" url="https://www.primefaces.org/cdn/api/upload.php" accept="image/*"></p-fileUpload>
+				</p-inputGroup>
+				@if(submitted && f['phone'].errors){
+					<small id="phone-errors-text" style="color: red;">Profil Fotosu eklenmek zorundadır.</small>
+				}	
+
+				<p-inputGroup>
+					<p-inputGroupAddon>
+						<i class="pi pi-lock"></i>
+					</p-inputGroupAddon>
+					<input pInputText type="password" placeholder="Şifre" formControlName="password" />
+				</p-inputGroup>
+				@if(submitted && f['password'].errors){
+					<small id="password-errors-text" style="color: red;">Şifre boş olamaz.</small>
+				}	
+	
+				<p-inputGroup>
+					<p-inputGroupAddon>
+						<i class="pi pi-lock"></i>
+					</p-inputGroupAddon>
+					<input pInputText type="password" placeholder="Şifreyi Tekrarla" formControlName="confirmPassword" />
+				</p-inputGroup>
+				@if(submitted && f['confirmPassword'].errors){
+					<small id="confirmPassword-errors-text" style="color: red;">Şifreler uyuşmuyor.</small>
+				}	
+	
+				<p-button type="submit" label="Kayıt Ol" icon="pi pi-arrow-right" size="small"></p-button>
+			</form>
+	</div>
+
+	<div class="image-wrapper">
+		<img src="assets/images/register.svg">
+		<p>Hoş geldiniz! Yeni bir hesap oluşturarak avantajlardan yararlanın! Bilgilerizi doldurun ve kaydolun.</p>
+	</div>
+</div>

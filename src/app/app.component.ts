@@ -3,6 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { LoginComponent } from './account/login/login.component';
 import { RegisterComponent } from './account/register/register.component';
 import { environment } from '../environment/environment';
+import { HttpClientModule } from '@angular/common/http';
 
 
 @Component({
@@ -10,6 +11,7 @@ import { environment } from '../environment/environment';
   standalone: true,
   imports: [
 		RouterOutlet,
+		HttpClientModule,
 		LoginComponent,
 		RegisterComponent,
 	],

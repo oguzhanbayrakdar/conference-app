@@ -4,7 +4,7 @@ import { environment } from '../../environment/environment';
 import { tap } from 'rxjs/internal/operators/tap';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AccountService {
 
@@ -28,11 +28,10 @@ export class AccountService {
 }
 
 export interface Register {
-	//(ad, soyad, email, telefon, şifre, profil resmi yükleme)
 	firstname: string
 	lastname: string
+	email: string
 	phone: string
 	password: string
-	confirmPassword: string
 	photo: string
 }

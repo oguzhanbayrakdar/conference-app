@@ -5,7 +5,6 @@ import { InputGroupModule } from 'primeng/inputgroup'
 import { InputTextModule } from 'primeng/inputtext';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AccountService } from '../../services/account.service';
-import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
@@ -17,7 +16,6 @@ import { HttpClientModule } from '@angular/common/http';
 		InputGroupModule,
     InputGroupAddonModule,
 		InputTextModule,
-		HttpClientModule
 	],
 	providers: [AccountService],
   templateUrl: './login.component.html',
