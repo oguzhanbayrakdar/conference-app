@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { LoginComponent } from './account/login/login.component';
-import { RegisterComponent } from './account/register/register.component';
-import { environment } from '../environment/environment';
+import { LoginComponent } from './core/account/login/login.component';
+import { RegisterComponent } from './core/account/register/register.component';
 import { HttpClientModule } from '@angular/common/http';
+import { ConferenceModule } from './core/conference/conference.module';
 
 
 @Component({
@@ -14,6 +14,7 @@ import { HttpClientModule } from '@angular/common/http';
 		HttpClientModule,
 		LoginComponent,
 		RegisterComponent,
+		ConferenceModule
 	],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'

@@ -1,0 +1,39 @@
+<div class="wrapper">
+	<form [formGroup]="conferenceForm">
+		<div class="input-group">
+			<label for="name">Toplantı Adı</label>
+			<input pInputText id="name" formControlName="name"/>	
+		</div>
+		
+		<div class="input-group">
+			<label for="startDate">Başlangıç Tarihi</label>
+			<p-calendar appendTo="body" [iconDisplay]="'input'" [showIcon]="true" inputId="startDate" formControlName="start"></p-calendar>
+		</div>
+
+		<div class="input-group">
+			<label for="endDate">Bitiş Tarihi</label>
+			<p-calendar appendTo="body" [iconDisplay]="'input'" [showTime]="true" [showIcon]="true" inputId="endDate" formControlName="end"></p-calendar>
+		</div>
+
+		<div class="input-group">
+			<label for="description">Açıklama</label>
+			<textarea rows="5" cols="60" id="description" pInputTextarea formControlName="description"></textarea>
+		</div>
+
+		<div class="input-group">
+			<label for="files">Dosyalar</label>
+			<p-fileUpload (onSelect)="onSelect($event)" id="files" [multiple]="true" accept="image/*" [maxFileSize]="4000000">
+				<ng-template pTemplate="content">
+					@if(uploadedFiles.length){
+						<ul>
+							@for(file of uploadedFiles; track file){
+								<li>{{ file.name }} - {{ file.size }} bytes</li>
+							}
+						</ul>
+					}
+				</ng-template>
+		</p-fileUpload>
+		</div>
+
+	</form>
+</div>

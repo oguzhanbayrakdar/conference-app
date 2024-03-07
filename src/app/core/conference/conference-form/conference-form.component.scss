@@ -1,0 +1,10 @@
+.input-group{
+	display: flex;
+	flex-direction: column;
+	margin-bottom: 16px;
+	
+	label{
+		font-weight: 600;
+		margin-bottom: 4px;
+	}
+}

@@ -4,8 +4,8 @@ import { ButtonModule } from 'primeng/button';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
-import Validation from '../../utils/Validation';
-import { AccountService } from '../../services/account.service';
+import Validation from '../../../utils/Validation';
+import { AccountService } from '../../../services/account.service';
 import { FileUploadEvent, FileUploadModule } from 'primeng/fileupload';
 
 @Component({

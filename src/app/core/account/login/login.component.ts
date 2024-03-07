@@ -4,7 +4,7 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputGroupModule } from 'primeng/inputgroup'
 import { InputTextModule } from 'primeng/inputtext';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AccountService } from '../../services/account.service';
+import { AccountService } from '../../../services/account.service';
 
 @Component({
   selector: 'app-login',

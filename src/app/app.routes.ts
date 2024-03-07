@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './account/login/login.component';
-import { RegisterComponent } from './account/register/register.component';
+import { LoginComponent } from './core/account/login/login.component';
+import { RegisterComponent } from './core/account/register/register.component';
+import { ConferenceComponent } from './core/conference/conference.component';
 
 export const routes: Routes = [
 	{
@@ -20,6 +21,11 @@ export const routes: Routes = [
 				component:RegisterComponent
 			}
 		]
+	},
+	// Eğer kullanıcı login olmamışsa login sayfasına yönlendir. Aksi takdirde conference sayfasına gitsin.
+	{
+		path: 'conference',
+		component: ConferenceComponent
 	}
 	
 ];
