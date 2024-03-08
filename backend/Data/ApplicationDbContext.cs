@@ -1,6 +1,8 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
 {
 
 	public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
@@ -28,5 +30,7 @@ public class ApplicationDbContext : DbContext
 		modelBuilder.Entity<UploadedFile>().Property(c => c.Size).IsRequired();
 		modelBuilder.Entity<UploadedFile>().Property(c => c.Path).IsRequired();
 		modelBuilder.Entity<UploadedFile>().Property(c => c.Type).IsRequired();
+		
+		base.OnModelCreating(modelBuilder);
 	}
 }
