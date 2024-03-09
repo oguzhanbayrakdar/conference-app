@@ -1,5 +1,5 @@
 <div class="wrapper">
-	<form [formGroup]="conferenceForm">
+	<form [formGroup]="conferenceForm" (ngSubmit)="save()">
 		<div class="input-group">
 			<label for="name">Toplantı Adı</label>
 			<input pInputText id="name" formControlName="name"/>	
@@ -7,7 +7,7 @@
 		
 		<div class="input-group">
 			<label for="startDate">Başlangıç Tarihi</label>
-			<p-calendar appendTo="body" [iconDisplay]="'input'" [showIcon]="true" inputId="startDate" formControlName="start"></p-calendar>
+			<p-calendar appendTo="body" [iconDisplay]="'input'" [showTime]="true" [showIcon]="true" inputId="startDate" formControlName="start"></p-calendar>
 		</div>
 
 		<div class="input-group">
@@ -22,7 +22,24 @@
 
 		<div class="input-group">
 			<label for="files">Dosyalar</label>
-			<p-fileUpload (onSelect)="onSelect($event)" id="files" [multiple]="true" accept="image/*" [maxFileSize]="4000000">
+			<p-fileUpload (onSelect)="onSelect($event)" id="files" [multiple]="true" [maxFileSize]="4000000">
+				@if(oldUploadedFiles.length){
+					<ng-template pTemplate="toolbar" >
+						<div class="old-uploaded-files-list">
+							<h4>Yüklenmiş Dosyalar</h4>
+							@for(file of oldUploadedFiles; track file){
+								<div class="old-uploaded-file">
+									<i class="pi pi-file" style="font-size: 2rem"></i>
+									<span>
+										{{ file.name }} - {{ file.size }} bytes
+									</span>
+									<p-button icon="pi pi-times" (click)="deleteOldFile(file)" [text]="true" severity="danger" size="small"></p-button>
+								</div>
+							}
+						</div>
+					</ng-template>
+				}
+			
 				<ng-template pTemplate="content">
 					@if(uploadedFiles.length){
 						<ul>
@@ -32,8 +49,10 @@
 						</ul>
 					}
 				</ng-template>
-		</p-fileUpload>
+			</p-fileUpload>
 		</div>
-
+		<div style="align-self: flex-end; width: fit-content;">
+			<p-button type="submit" label="Kaydet" icon="pi pi-arrow-right" size="small"></p-button>
+		</div>
 	</form>
 </div>

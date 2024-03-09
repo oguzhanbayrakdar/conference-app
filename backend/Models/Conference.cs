@@ -1,9 +1,8 @@
-using System.ComponentModel.DataAnnotations;
 
 public class Conference{
 	public Guid Id{ get; set;}
 	
-	public string Name{ get; set;}
+	public required string Name{ get; set;}
 
 	public DateTime Start {get; set;}
 

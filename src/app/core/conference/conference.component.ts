@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ConferenceService } from '../../services/conference.service';
 import { Conference } from '../../models/conference'
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
 import { ConferenceFormComponent } from './conference-form/conference-form.component';
+import { UploadedFile } from '../../models/uploadedFile';
 
 @Component({
 	selector: 'app-conference',
@@ -11,87 +12,23 @@ import { ConferenceFormComponent } from './conference-form/conference-form.compo
 	styleUrl: './conference.component.scss'
 })
 
-export class ConferenceComponent {
-	exampleData: Conference[] = [
-		{
-			id: "1",
-			name: "Web Development Summit",
-			start: new Date("2024-05-10T09:00:00"),
-			end: new Date("2024-05-12T17:00:00"),
-			description: "This summit covers the latest trends and technologies in web development.",
-		},
-		{
-			id: "2",
-			name: "Data Science Conference",
-			start: new Date("2024-06-15T10:00:00"),
-			end: new Date("2024-06-15T18:00:00"),
-			description: "Explore the world of data science and machine learning at this conference."
-		},
-		{
-			id: "3",
-			name: "Mobile App Expo",
-			start: new Date("2024-08-20T11:00:00"),
-			end: new Date("2024-08-22T16:00:00"),
-			description: "Discover the latest innovations in mobile app development."
-		},
-		{
-			id: "4",
-			name: "AI and Robotics Congress",
-			start: new Date("2024-09-25T10:30:00"),
-			end: new Date("2024-09-27T17:30:00"),
-			description: "Join experts in artificial intelligence and robotics for insightful discussions."
-		},
-		{
-			id: "5",
-			name: "Cloud Computing Symposium",
-			start: new Date("2024-10-30T09:30:00"),
-			end: new Date("2024-10-30T16:30:00"),
-			description: "Learn about the advancements in cloud computing technologies."
-		},
-		{
-			id: "6",
-			name: "Cybersecurity Summit",
-			start: new Date("2024-12-05T10:15:00"),
-			end: new Date("2024-12-07T17:15:00"),
-			description: "Discuss cybersecurity challenges and solutions with industry leaders."
-		},
-		{
-			id: "7",
-			name: "Blockchain Conference",
-			start: new Date("2025-01-20T09:45:00"),
-			end: new Date("2025-01-22T16:45:00"),
-			description: "Explore the potential of blockchain technology and its applications."
-		},
-		{
-			id: "8",
-			name: "IoT Expo",
-			start: new Date("2025-03-15T10:45:00"),
-			end: new Date("2025-03-15T17:45:00"),
-			description: "Discover the Internet of Things (IoT) ecosystem at this expo."
-		},
-		{
-			id: "9",
-			name: "HealthTech Summit",
-			start: new Date("2025-04-25T09:20:00"),
-			end: new Date("2025-04-25T16:20:00"),
-			description: "Explore the intersection of healthcare and technology."
-		},
-		{
-			id: "10",
-			name: "Fintech Forum",
-			start: new Date("2025-06-10T10:20:00"),
-			end: new Date("2025-06-12T17:20:00"),
-			description: "Discuss the latest trends and innovations in financial technology."
-		}
-	];
+export class ConferenceComponent implements OnInit {
+	conferences: Conference[] = [];
+	isConferenceFormOpen = false;
+	conferenceFormType: 'edit' | 'create' = 'create';
+	selectedConferenceToEdit?: Conference;
 
 	constructor(
 		private conferenceService: ConferenceService,
 		private confirmationService: ConfirmationService,
-		private messageService: MessageService,
-		private dialogService: DialogService) { 
-			this.editConference(this.exampleData[0])
-		}
+		private messageService: MessageService
+		) { }
+
+	ngOnInit(): void {
+		this.conferenceService.getConferences().subscribe(conferences => {
+			this.conferences = conferences
+		})
+	}
 
 	deleteConference(id: string) {
 		this.confirmationService.confirm({
@@ -105,6 +42,9 @@ export class ConferenceComponent {
 			accept: () => {
 				this.conferenceService.delete(id).subscribe(
 				() => {
+					let index = this.conferences.findIndex(f => f.id === id);
+					this.conferences.splice(index, 1);
+
 					this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'Record deleted' });
 				});
 			},
@@ -114,10 +54,32 @@ export class ConferenceComponent {
 		});
 	}
 
-
 	editConference(conference: Conference) {
-		
+		this.conferenceFormType = 'edit'
+		this.isConferenceFormOpen = !this.isConferenceFormOpen
+		this.selectedConferenceToEdit = conference
+	}
+
+	openCreateConferenceSidebar(){
+		this.conferenceFormType = 'create'
+		this.isConferenceFormOpen = !this.isConferenceFormOpen
+		this.selectedConferenceToEdit = undefined
+	}
+
+	getConferenceFormData(conference: Conference){
+		if(this.conferenceFormType == 'create'){
+			this.conferences.unshift(conference)
+		}else{
+			let index = this.conferences.findIndex(f => f.id == conference.id);
+			if(index !== -1){
+				const uploadedFiles: UploadedFile[] = [];
+				if(this.conferences[index].files) uploadedFiles.push(...this.conferences[index].files || [])
+				if(conference.files) uploadedFiles.push(...conference.files)
+			
+				Object.assign(this.conferences[index], conference);
+				this.conferences[index].files = uploadedFiles;
+			}
+		}
+		this.isConferenceFormOpen = false;
 	}
 }
-
-

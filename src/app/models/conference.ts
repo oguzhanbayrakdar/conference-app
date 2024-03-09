@@ -1,11 +1,12 @@
+import { UploadedFile } from "./uploadedFile"
+
 export class Conference{
 	id: string
 	name: string
 	start: Date
 	end: Date
 	description?: string
-	files?: any[]
-
+	files?: UploadedFile[]
 
 	constructor(details: Conference) {
 		this.id = details.id

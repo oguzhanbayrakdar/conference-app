@@ -10,6 +10,7 @@ import { ToastModule } from 'primeng/toast';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { SidebarModule } from 'primeng/sidebar';
 import { ConferenceFormComponent } from './conference-form/conference-form.component';
+import { UploadedFileService } from '../../services/uploaded-file.service';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { ConferenceFormComponent } from './conference-form/conference-form.compo
 	providers:[
 		ConferenceService,
 		ConfirmationService,
+		UploadedFileService,
 		MessageService,
 		DialogService
 	]

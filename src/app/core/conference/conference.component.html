@@ -8,7 +8,7 @@
 			gerçekleştirebilir.
 		</h4>
 
-		<p-button icon="pi pi-calendar-plus" label="Yeni Toplantı Oluştur"></p-button>
+		<p-button icon="pi pi-calendar-plus" (click)="openCreateConferenceSidebar()" label="Yeni Toplantı Oluştur"></p-button>
 	</div>
 
 	<hr class="seperator">
@@ -17,7 +17,7 @@
 		<h2>Toplantılarım</h2>
 
 		<div class="conference-list">
-			<p-table [value]="exampleData"  styleClass="p-datatable-striped p-datatable-sm	" [tableStyle]="{ 'min-width': '50rem' }">
+			<p-table [value]="conferences"  styleClass="p-datatable-striped p-datatable-sm	" [tableStyle]="{ 'min-width': '50rem' }">
 				<ng-template pTemplate="header">
 					<tr>
 						<th>Ad</th>
@@ -56,14 +56,18 @@
 	<p-confirmDialog></p-confirmDialog>
 </div>
 
-<p-sidebar [visible]="true" [fullScreen]="true">
-	<ng-template pTemplate="header">Edit | Create Conference</ng-template>
+<p-sidebar [(visible)]="isConferenceFormOpen" [dismissible]="true" styleClass="p-sidebar-lg" [fullScreen]="false">
+	<ng-template pTemplate="header">
+		<h2>
+			@if(conferenceFormType == 'edit'){
+				Toplantıyı Düzenle
+			}@else{
+				Toplantı Ekle
+			}
+		</h2>
+	</ng-template>
 	<ng-template pTemplate="content">
-		<app-conference-form></app-conference-form>
+		<app-conference-form (newConference)="getConferenceFormData($event)" [type]="conferenceFormType" [conference]="selectedConferenceToEdit"></app-conference-form>
 	</ng-template>
-	<ng-template pTemplate="footer">
-		kaydet zart zurt
-	</ng-template>
-
 </p-sidebar>
 

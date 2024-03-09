@@ -5,6 +5,7 @@ import { InputGroupModule } from 'primeng/inputgroup'
 import { InputTextModule } from 'primeng/inputtext';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AccountService } from '../../../services/account.service';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -16,6 +17,7 @@ import { AccountService } from '../../../services/account.service';
 		InputGroupModule,
     InputGroupAddonModule,
 		InputTextModule,
+		RouterModule
 	],
 	providers: [AccountService],
   templateUrl: './login.component.html',
@@ -29,7 +31,7 @@ export class LoginComponent implements OnInit{
 		password: new FormControl('')
 	});
 
-  constructor(private formBuilder: FormBuilder, private accountService: AccountService) {}
+  constructor(private formBuilder: FormBuilder, private accountService: AccountService, private router: Router) {}
 
 	ngOnInit(): void {
 		this.loginForm = this.formBuilder.group({
@@ -43,7 +45,10 @@ export class LoginComponent implements OnInit{
 		if(this.loginForm.invalid) return;
 
 		// Makes http request to login and gets a jwt token.
-		this.accountService.login(this.loginForm.value).subscribe()
+		this.accountService.login(this.loginForm.value).subscribe(() => {
+			// navigate to conference page if login successful.
+			this.router.navigate(['/conference'])
+		})
 	}
 
 	get f(): { [key: string]: AbstractControl } {

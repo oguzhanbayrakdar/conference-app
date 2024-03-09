@@ -8,3 +8,19 @@
 		margin-bottom: 4px;
 	}
 }
+form{
+	display: flex;
+	flex-direction: column;
+}
+.old-uploaded-files-list{
+	display: flex; 
+	flex-direction: column;
+	width: 100%;
+
+	.old-uploaded-file{
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+		
+	}
+}

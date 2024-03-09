@@ -1,9 +1,7 @@
-using System.ComponentModel.DataAnnotations;
-
 public class UploadedFile{
 	public Guid Id { get; set; }
 	public required string Name { get; set; }
-	public required int Size { get; set; }
+	public required long Size { get; set; }
 	public required string Type { get; set; }
 	public string? Path { get; set; }
 

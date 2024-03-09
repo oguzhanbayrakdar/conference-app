@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 [ApiController]
 public class ConferenceController : ControllerBase
 {
-
 	private readonly IConferenceService _conferenceService;
 
 	public ConferenceController(IConferenceService conferenceService)
@@ -14,42 +13,33 @@ public class ConferenceController : ControllerBase
 	}
 
 	[HttpGet]
-	public IActionResult GetAll()
+	public async Task<IActionResult> GetAll()
 	{
-		var conferences = _conferenceService.GetAllConferences();
+		var conferences = await _conferenceService.GetAllConferences();
 		return Ok(conferences);
 	}
-	[HttpGet("{id}")]
-	public IActionResult GetConferenceById([FromRoute] Guid id)
+
+	[HttpPost]
+	public async Task<IActionResult> Create([FromForm] ConferenceDTO conferenceDto)
 	{
-		var conference = _conferenceService.GetConferenceById(id);
-		if (conference == null)
-		{
-			return NotFound();
-		}
+		if(!ModelState.IsValid)return BadRequest(ModelState);
+
+		var conference = await _conferenceService.CreateConference(conferenceDto);
 		return Ok(conference);
 	}
 
-
-	[HttpPost]
-	public IActionResult Create([FromBody] Conference conference)
-	{
-		_conferenceService.CreateConference(conference);
-		return Ok(HttpStatusCode.Created);
-	}
-
 	[HttpPut("{id}")]
-	public IActionResult Update(Guid id, [FromBody] Conference conference)
+	public async Task<IActionResult> Update(Guid id, [FromForm] ConferenceDTO conferenceDto)
 	{
-		_conferenceService.UpdateConference(id, conference);
-		return Ok("success!");
+		var conference = await _conferenceService.UpdateConference(id, conferenceDto);
+		return Ok(conference);
 	}
 
 	[HttpDelete("{id}")]
 	public IActionResult Delete(Guid id)
 	{
 		_conferenceService.DeleteConference(id);
-		return Ok("Book List");
+		return Ok(HttpStatusCode.OK);
 	}
 
 }

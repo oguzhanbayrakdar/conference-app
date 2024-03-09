@@ -13,17 +13,20 @@ public class AccountController : ControllerBase
 	private readonly JwtService _jwtService;
 	private readonly SignInManager<User> _signInManager;
 	private readonly UploadService _uploadService;
+	private readonly EmailService _emailService;
 	public AccountController(
 		UserManager<User> userManager,
 		SignInManager<User> signInManager,
 		JwtService jwtService,
-		UploadService uploadService
+		UploadService uploadService,
+		EmailService emailService
 	)
 	{
 		_userManager = userManager;
 		_signInManager = signInManager;
 		_jwtService = jwtService;
 		_uploadService = uploadService;
+		_emailService = emailService;
 	}
 
 	[HttpPost("login")]
@@ -36,7 +39,9 @@ public class AccountController : ControllerBase
 		if (!result.Succeeded) return Unauthorized();
 
 		var token = _jwtService.GenerateJwtToken(user);
-		return Ok(token);
+		return Ok(new {
+			token
+		});
 	}
 
 	[HttpPost("register")]
@@ -59,6 +64,7 @@ public class AccountController : ControllerBase
 			Email = registerViewModel.Email,
 			Phone = registerViewModel.Phone,
 			UserName = registerViewModel.Email,
+			Photo = "", // For now, we set it to empty string
 		};
 
 		var result = await _userManager.CreateAsync(user, registerViewModel.Password);
@@ -77,7 +83,7 @@ public class AccountController : ControllerBase
 		var photo = await _uploadService.UploadFile(registerViewModel.PhotoFile);
 		user.Photo = photo;
 		await _userManager.UpdateAsync(user);
-
+		await _emailService.SendEmailAsync(user.Firstname + user.Lastname, user.Email, "Hoşgeldiniz.", "Başarıyla kayıt olundu.");
 		return Ok(result);
 	}
 

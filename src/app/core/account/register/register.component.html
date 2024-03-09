@@ -46,11 +46,8 @@
 					<p-inputGroupAddon>
 						<i class="pi pi-image"></i>
 					</p-inputGroupAddon>
-					<p-fileUpload mode="basic" [maxFileSize]="1000000" (onUpload)="onProfilePhotoUpload($event)" chooseLabel="Choose" name="demo[]" url="https://www.primefaces.org/cdn/api/upload.php" accept="image/*"></p-fileUpload>
+					<p-fileUpload mode="basic" [maxFileSize]="1000000" (onSelect)="onProfilePhotoSelect($event)" chooseLabel="Choose" name="photo[]" accept="image/*"></p-fileUpload>
 				</p-inputGroup>
-				@if(submitted && f['phone'].errors){
-					<small id="phone-errors-text" style="color: red;">Profil Fotosu eklenmek zorundadır.</small>
-				}	
 
 				<p-inputGroup>
 					<p-inputGroupAddon>
@@ -72,7 +69,11 @@
 					<small id="confirmPassword-errors-text" style="color: red;">Şifreler uyuşmuyor.</small>
 				}	
 	
-				<p-button type="submit" label="Kayıt Ol" icon="pi pi-arrow-right" size="small"></p-button>
+				<div class="register-button">
+					<a routerLink="/account/register">Zaten bir hesabınız var mı! Giriş Yapın!</a>
+					<p-button type="submit" label="Kayıt Ol" icon="pi pi-arrow-right" size="small"></p-button>
+				</div>
+	
 			</form>
 	</div>
 

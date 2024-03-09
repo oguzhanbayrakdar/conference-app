@@ -1,19 +1,28 @@
 using System.Text;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+	options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+	c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+});
 
 builder.Services.AddScoped<IConferenceService, ConferenceService>();
 builder.Services.AddScoped<UploadService>();
+builder.Services.AddScoped<EmailService>();
 builder.Services.AddScoped<SignInManager<User>>();
 // builder.Services.AddScoped<UserManager<User>>();
 builder.Services.AddHttpContextAccessor();
@@ -61,6 +70,14 @@ builder.Services.AddAuthentication(options =>
 builder.Services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
 builder.Services.AddScoped<JwtService>();
 builder.Services.AddSingleton<IConfiguration>(configuration);
+builder.Services.AddCors(options =>
+{
+	options.AddPolicy("CorsPolicy",
+			builder => builder
+					.AllowAnyOrigin()
+					.AllowAnyMethod()
+					.AllowAnyHeader());
+});
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
@@ -73,9 +90,14 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
 	app.UseSwagger();
-	app.UseSwaggerUI();
+	app.UseSwaggerUI(c =>
+	{
+		c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+	});
+
 }
-app.UseStaticFiles(new StaticFileOptions{
+app.UseStaticFiles(new StaticFileOptions
+{
 	FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "uploads")),
 	RequestPath = "/uploads"
 });
@@ -84,6 +106,7 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseCors("CorsPolicy");
 
 app.MapControllers();
 

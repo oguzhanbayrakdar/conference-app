@@ -1,47 +1,74 @@
+using Microsoft.EntityFrameworkCore;
+
 public interface IConferenceService
 {
-	IEnumerable<Conference> GetAllConferences();
-	Conference GetConferenceById(Guid id);
-	void CreateConference(Conference conference);
+	Task<IEnumerable<Conference>> GetAllConferences();
+	Task<Conference> CreateConference(ConferenceDTO conference);
 	void DeleteConference(Guid id);
-	void UpdateConference(Guid id, Conference updatedConference);
+	Task<Conference> UpdateConference(Guid id, ConferenceDTO updatedConference);
 }
 
 public class ConferenceService : IConferenceService
 {
 	private readonly ApplicationDbContext _dbContext;
-	public ConferenceService(ApplicationDbContext dbContext)
+	private readonly UploadService _uploadService;
+	public ConferenceService(ApplicationDbContext dbContext, UploadService uploadService)
 	{
 		_dbContext = dbContext;
+		_uploadService = uploadService;
 	}
 
-	public void CreateConference(Conference conference)
+	public async Task<Conference> CreateConference(ConferenceDTO conferenceDto)
 	{
-		_dbContext.Conferences.Add(conference);
-		_dbContext.SaveChanges();
+		var conference = new Conference{
+			Name = conferenceDto.Name,
+			Start = conferenceDto.Start,
+			End = conferenceDto.End,
+			Description = conferenceDto.Description
+		};
+		await _dbContext.Conferences.AddAsync(conference);
+		
+		if(conferenceDto.Files?.Any() ?? false){
+			foreach(IFormFile file in conferenceDto.Files){
+				var path = await _uploadService.UploadFile(file);
+
+				var uploadedFile = new UploadedFile{
+					Name = file.FileName,
+					Size = file.Length,
+					Type = file.ContentType,
+					Path = path,
+				};
+				_dbContext.UploadedFiles.Add(uploadedFile);
+				conference.Files.Add(uploadedFile);
+			}
+		}
+
+    await _dbContext.SaveChangesAsync();
+		return conference;
 	}
 
 	public void DeleteConference(Guid id)
 	{
-		var conferenceToRemove = _dbContext.Conferences.FirstOrDefault(b => b.Id == id);
+		var conferenceToRemove = _dbContext.Conferences.Include(c => c.Files).FirstOrDefault(b => b.Id == id);
 		if (conferenceToRemove != null)
 		{
+			var uploadedFiles = conferenceToRemove.Files.ToList();
+
 			_dbContext.Conferences.Remove(conferenceToRemove);
+			_dbContext.UploadedFiles.RemoveRange(uploadedFiles);
+			
 			_dbContext.SaveChanges();
 		}
 	}
 
-	public IEnumerable<Conference> GetAllConferences()
+	public async Task<IEnumerable<Conference>> GetAllConferences()
 	{
-		return _dbContext.Conferences.AsEnumerable();
+		var conferences = await _dbContext.Conferences.Include(c => c.Files).ToListAsync();
+
+		return conferences;
 	}
 
-	public Conference GetConferenceById(Guid Id)
-	{
-		return _dbContext.Conferences.FirstOrDefault(b => b.Id == Id);
-	}
-
-	public void UpdateConference(Guid id, Conference updatedConference)
+	public async Task<Conference> UpdateConference(Guid id, ConferenceDTO updatedConference)
 	{
 		var existingConference = _dbContext.Conferences.FirstOrDefault(b => b.Id == id);
 		if (existingConference != null)
@@ -50,8 +77,23 @@ public class ConferenceService : IConferenceService
 			existingConference.Description = updatedConference.Description;
 			existingConference.Start = updatedConference.Start;
 			existingConference.End = updatedConference.End;
-		}
-		_dbContext.SaveChanges();
+			
+			if(updatedConference.Files?.Any() ?? false){
+				foreach(IFormFile file in updatedConference.Files){
+					var path = await _uploadService.UploadFile(file);
 
+					var uploadedFile = new UploadedFile{
+						Name = file.FileName,
+						Size = file.Length,
+						Type = file.ContentType,
+						Path = path,
+					};
+					_dbContext.UploadedFiles.Add(uploadedFile);
+					existingConference.Files.Add(uploadedFile);
+				}
+			}
+		}
+		await _dbContext.SaveChangesAsync();
+		return existingConference;
 	}
 }
