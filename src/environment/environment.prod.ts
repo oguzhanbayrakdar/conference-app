@@ -1,4 +1,4 @@
 export const environment = {
 	production: true,
-	apiUrl: 'http://oguztestdckrefcore.online/api'
+	apiUrl: 'http://localhost:5116/api'
 }
