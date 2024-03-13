@@ -19,7 +19,7 @@ services:
       - "1453:1433"
     environment:
       - ACCEPT_EULA=Y
-      - MSSQL_SA_PASSWORD=sframpage+976
+      - MSSQL_SA_PASSWORD=kLAp+7P6UezmlbdGIMFfbs
       - MSSQL_PID=Express
     networks:
       - appnetwork
