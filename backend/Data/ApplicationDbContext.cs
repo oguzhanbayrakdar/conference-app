@@ -7,7 +7,12 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<Guid>, 
 
 	public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
 				: base(options)
-	{ }
+	{
+		Console.WriteLine("Bağlantı başlatılıyor.");
+		Console.WriteLine(Database.GetConnectionString());
+		Database.EnsureCreated(); // Veritabanı oluşturulduysa mesajı yazdıralım
+		Console.WriteLine("SQL bağlantısı başarılı bir şekilde sağlandı2.");
+	}
 
 	public DbSet<Conference> Conferences { get; set; }
 	public DbSet<UploadedFile> UploadedFiles { get; set; }
@@ -30,7 +35,7 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<Guid>, 
 		modelBuilder.Entity<UploadedFile>().Property(c => c.Size).IsRequired();
 		modelBuilder.Entity<UploadedFile>().Property(c => c.Path).IsRequired();
 		modelBuilder.Entity<UploadedFile>().Property(c => c.Type).IsRequired();
-		
+
 		base.OnModelCreating(modelBuilder);
 	}
 }

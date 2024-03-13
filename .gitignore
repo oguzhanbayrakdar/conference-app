@@ -3,6 +3,7 @@
 # Backend
 /backend/bin
 /backend/obj
+/backend/out
 
 # Compiled output
 /dist

@@ -9,6 +9,7 @@ import { AccountService } from '../../../services/account.service';
 import { FileUploadEvent, FileUploadModule } from 'primeng/fileupload';
 import { Router, RouterModule } from '@angular/router';
 import { RegisterDTO } from '../../../models/registerDTO';
+import { MessageService } from 'primeng/api';
 
 @Component({
 	selector: 'app-register',
@@ -21,8 +22,9 @@ import { RegisterDTO } from '../../../models/registerDTO';
 		InputGroupAddonModule,
 		InputTextModule,
 		FileUploadModule,
-		RouterModule
+		RouterModule,
 	],
+	providers: [AccountService],
 	templateUrl: './register.component.html',
 	styleUrl: './register.component.scss'
 })

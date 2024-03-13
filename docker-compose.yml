@@ -1,0 +1,43 @@
+version: '3.4'
+
+services:
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: angular-runtime
+    ports:
+      - "4200:80"
+    networks:
+      - appnetwork
+    restart: always
+
+  sqlserver:
+    container_name: sqlserver
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    ports:
+      - "1453:1433"
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=sframpage+976
+      - MSSQL_PID=Express
+    networks:
+      - appnetwork
+    restart: always
+
+  ef-core-web-api-runtime:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+      target: webapi-runtime
+    ports:
+      - "5116:80"
+    networks:
+      - appnetwork
+    depends_on:
+      - sqlserver
+    restart: always
+
+networks:
+  appnetwork:
+    driver: bridge

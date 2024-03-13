@@ -92,8 +92,8 @@ public class ConferenceService : IConferenceService
 					existingConference.Files.Add(uploadedFile);
 				}
 			}
+			await _dbContext.SaveChangesAsync();
 		}
-		await _dbContext.SaveChangesAsync();
-		return existingConference;
+		return existingConference!;
 	}
 }

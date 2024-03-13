@@ -3,19 +3,22 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../environment/environment';
 import { Conference } from '../models/conference';
 import { ConferenceDTO } from '../models/conferenceDTO';
+import { Observable, catchError } from 'rxjs';
+import { ToastService } from './toast.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ConferenceService {
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private toastService: ToastService) { }
 
 	getConferences(){
-		return this.http.get<Conference[]>(environment.apiUrl + '/conference')
-	}
-
-	getConference(id: string){
-		return this.http.get<Conference>(environment.apiUrl + '/conference/' + id)
+		return this.http.get<Conference[]>(environment.apiUrl + '/conference').pipe(
+			catchError((err: any) => {
+				this.toastService.showToast('error', 'Error', 'Verileri alırken bir hata oluştu.');
+				throw err;
+			})
+		)
 	}
 
 	create(conference: ConferenceDTO){
@@ -30,7 +33,9 @@ export class ConferenceService {
 				formData.append('files',conference.files[i]);
 			}
 		}
-		return this.http.post<Conference>(environment.apiUrl + '/conference', formData)
+		return this.http.post<Conference>(environment.apiUrl + '/conference', formData).pipe(
+			this.toastService.handleGenericToastMessages()
+		)
 	}
 
 	update(conference: ConferenceDTO){
@@ -46,10 +51,14 @@ export class ConferenceService {
 			}
 		}
 
-		return this.http.put<Conference>(environment.apiUrl + '/conference/' + conference.id, formData)
+		return this.http.put<Conference>(environment.apiUrl + '/conference/' + conference.id, formData).pipe(
+			this.toastService.handleGenericToastMessages()
+		)
 	}
 
 	delete(id: string){
-		return this.http.delete(environment.apiUrl + '/conference/' + id)
+		return this.http.delete(environment.apiUrl + '/conference/' + id).pipe(
+			this.toastService.handleGenericToastMessages()
+		)
 	}
 }

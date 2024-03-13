@@ -3,13 +3,15 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../environment/environment';
 import { tap } from 'rxjs/internal/operators/tap';
 import { RegisterDTO } from '../models/registerDTO';
+import { catchError } from 'rxjs';
+import { ToastService } from './toast.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AccountService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private toastService: ToastService) { }
 
 	login(login: {email: string, password: string}){
 		return this.http.post<any>(environment.apiUrl + '/account/login', login)
@@ -17,7 +19,12 @@ export class AccountService {
 			tap((data: {token: string, user: any}) => {
 				if(data){
 					localStorage.setItem('token', data.token);
+					this.toastService.showGenericSuccessToast();
 				}
+			}),
+			catchError((error) => {
+				this.toastService.showGenericErrorToast();
+				throw error;
 			})
 		);
 	}
@@ -31,7 +38,9 @@ export class AccountService {
 		formData.append('password', register.password);
 		formData.append('photoFile', profilePhoto);
 		
-		return this.http.post(environment.apiUrl + '/account/register', formData);
+		return this.http.post(environment.apiUrl + '/account/register', formData).pipe(
+			this.toastService.handleGenericToastMessages()
+		)
 	}
 
 }

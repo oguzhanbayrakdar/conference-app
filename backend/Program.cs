@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -38,7 +39,7 @@ builder.Services.AddIdentityCore<User>(opt =>
 
 	// User settings.
 	opt.User.RequireUniqueEmail = false;
-	opt.User.AllowedUserNameCharacters = null;
+	opt.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
 })
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
@@ -54,7 +55,7 @@ builder.Services.AddAuthentication(options =>
 	options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
 	options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 })
-.AddJwtBearer(options =>
+.AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
 {
 	options.TokenValidationParameters = new TokenValidationParameters
 	{
@@ -62,10 +63,13 @@ builder.Services.AddAuthentication(options =>
 		ValidateAudience = true,
 		ValidateLifetime = true,
 		ValidateIssuerSigningKey = true,
-		ValidIssuer = configuration["JwtSettings:Issuer"],
-		ValidAudience = configuration["JwtSettings:Audience"],
-		IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSettings:Secret"]))
+		ValidIssuer = configuration.GetValue<string>("JwtSettings:Issuer")!,
+		ValidAudience = configuration.GetValue<string>("JwtSettings:Audience")!,
+		IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration.GetValue<string>("JwtSettings:Secret")!))
 	};
+})
+.AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, opt => {
+	opt.LoginPath = "/account/login";
 });
 builder.Services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
 builder.Services.AddScoped<JwtService>();
@@ -103,10 +107,11 @@ app.UseStaticFiles(new StaticFileOptions
 });
 
 app.UseHttpsRedirection();
+app.UseCors("CorsPolicy");
 
 app.UseAuthentication();
+app.UseRouting();
 app.UseAuthorization();
-app.UseCors("CorsPolicy");
 
 app.MapControllers();
 

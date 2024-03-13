@@ -1,34 +1,13 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ButtonModule } from 'primeng/button';
-import { InputGroupModule } from 'primeng/inputgroup';
-import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
-import { InputTextModule } from 'primeng/inputtext';
-import { FileUploadModule } from 'primeng/fileupload';
-import { CalendarModule } from 'primeng/calendar';
-import { MultiSelectModule } from 'primeng/multiselect';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ConferenceService } from '../../../services/conference.service';
 import { ConferenceDTO } from '../../../models/conferenceDTO';
 import { Conference } from '../../../models/conference';
-import { Subscription } from 'rxjs';
 import { UploadedFile } from '../../../models/uploadedFile';
 import { UploadedFileService } from '../../../services/uploaded-file.service';
 
 @Component({
   selector: 'app-conference-form',
-  standalone: true,
-  imports: [
-		FormsModule,
-		ReactiveFormsModule,
-		ButtonModule,
-		InputGroupModule,
-		InputGroupAddonModule,
-		InputTextModule,
-		FileUploadModule,
-		CalendarModule,
-		MultiSelectModule
-	],
-	providers: [ConferenceService],
   templateUrl: './conference-form.component.html',
   styleUrl: './conference-form.component.scss'
 })

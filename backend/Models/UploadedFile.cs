@@ -8,6 +8,6 @@ public class UploadedFile{
 	// public Guid ConferenceId;
 
 	public Guid ConferenceId { get; set; }
-	public Conference Conference { get; set; } = null;
+	public Conference? Conference { get; set; } = null;
 
 }
